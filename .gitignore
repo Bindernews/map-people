@@ -1,0 +1,6 @@
+
+# Ignore the node modules
+node_modules/
+
+# Ignore the database
+db.sqlite3
