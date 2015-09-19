@@ -62,3 +62,5 @@ function runExitHandlers(reason) {
     console.log("Exiting server...");
     process.exit();
 }
+
+initExitHandlers();

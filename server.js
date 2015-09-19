@@ -10,30 +10,30 @@ var path = require('path'),
     fs = require('fs'),
     express = require('express'),
     bodyParser = require('body-parser'),
-    sqlite3 = require('sqlite3').verbose(),
     config = require('./config'),
     exitHandlers = require('./exitHandler');
 
-// Constants
+
+// Constant regexes
 var WORKPLACE_REGEX = /[^a-zA-Z0-9 ,']/;
 var TAGS_REGEX = /[^a-z0-9, ]/;
 
+
+// First we need to initalize the backend
+var backend = require('./backends/' + config.BACKEND);
+// Allow it to initialize
+backend.init();
+// Make sure the backend has a chance to shutdown when we close
+exitHandlers.push(function() {
+    backend.close();
+});
+
+
 /**
  * When this is set to a value it should be returned instead of querying the
- * database. Whenever the database is updated this value should be set to null.
+ * backend. Whenever the backend is updated this value should be set to null.
  */
-var databaseCache = null;
-
-// Create or access the database
-var db = new sqlite3.Database(config.DATABASE, function() {
-    console.log('Database open');
-    initDatabase();
-});
-
-// Close the database before we exit
-exitHandlers.push(function () {
-    db.close();
-});
+var backendCache = null;
 
 // Create the express handler and server
 var app = express();
@@ -47,23 +47,26 @@ app.use(bodyParser.urlencoded({
     extended: true
 }));
 
+app.get('/', function(req, res) {
+    res.redirect('/static/index.html');
+});
 
 /**
  * Handle GET requests for the current data stored in the database.
  */
 app.get('/data/json', function(req, res) {
-    if (databaseCache != null) {
-        return res.end(databaseCache);
+    if (backendCache != null) {
+        return res.end(backendCache);
     } else {
-        db.all('SELECT * FROM ' + config.TABLE, function(err, rows) {
+        backend.getPeople(function (err, people) {
             if (err) {
                 console.error(err);
                 var result = { error: err };
                 res.status(500).end(JSON.stringify(result));
             } else {
-                var result = { people: rows };
-                databaseCache = JSON.stringify(result);
-                return res.end(databaseCache);
+                var result = { people: people };
+                backendCache = JSON.stringify(result);
+                return res.end(backendCache);
             }
         });
     }
@@ -77,8 +80,6 @@ app.post('/data/newpoint', function(req, res) {
     // constants
     var FORM_URL = '/static/newpoint.html?';
     var SUCCESS_URL = '/static/point_created.html';
-    var INSERT_STATEMENT = 'INSERT INTO ' + config.TABLE + ' \
-(lat, lng, name, workplace, tags) VALUES (?1, ?2, ?3, ?4, ?5)';
         
     // verify data is valid
     var lat = parseFloat(req.body.lat),
@@ -105,8 +106,8 @@ app.post('/data/newpoint', function(req, res) {
         return res.redirect(redirectURL);
     } else {
         // TODO map tags to set list of tags
-        databaseCache = null;
-        db.run(INSERT_STATEMENT, [lat, lng, name, workplace, tags]);
+        backendCache = null;
+        backend.createPerson(lat, lng, name, workplace, tags);
         return res.redirect(SUCCESS_URL);
     }
 });
@@ -118,13 +119,3 @@ server.listen(config.PORT, function() {
 });
 
 
-/**
- * Initialize the database by creating tables.
- */
-function initDatabase() {
-    var statement = 'CREATE TABLE IF NOT EXISTS ' + config.TABLE + ' (\
-id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, lat FLOAT, lng FLOAT, \
-name VARCHAR(100) NOT NULL, workplace VARCHAR(100) NOT NULL, \
-tags VARCHAR(255) NOT NULL)';
-    db.run(statement);
-}

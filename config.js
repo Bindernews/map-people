@@ -18,11 +18,19 @@ var config = module.exports = {};
 config.PORT = process.env.PORT || 3000;
 
 /**
+ * Which backend to use. Backends can be found in the 'backends' directory.
+ * The backend should be the name of a .js file in the backends directory
+ * but without the .js extension. For example to use the sqlite3 backend
+ * you would put 'sqlite3'.
+ */
+config.BACKEND = 'sqlite3';
+
+/**
  * Filename to use with sqlite database
  */
-config.DATABASE = process.env.DATABASE || 'db.sqlite3';
+config.DATABASE = 'db.sqlite3';
 
 /**
  * Table in database to store information
  */
-config.TABLE = process.env.TABLE || 'people';
+config.TABLE = 'people';
