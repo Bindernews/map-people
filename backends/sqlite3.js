@@ -6,10 +6,28 @@
     in the LICENSE.txt file.
  */
 
+// Require things before all else
+var sqlite3 = require('sqlite3'),    // sqlite3 module so we can use sqlite3
+    config = require('../config');   // config because we need it
 
-// The SQLite backend for data storage
-var sqlite3 = require('sqlite3'),
-    config = require('../config');
+
+// The sqlite3 backend requires the sqlite3 node module which is why it is
+// required in package.json. If you are using a different backend then you
+// can safely remove that module and it won't be used.
+// 
+// The sqlite3 backend has a few config options which you may set. They are
+// described below.
+// 
+
+// The DATABASE config option determines which database file sqlite3 will
+// use. This defaults to 'db.sqlite3'
+config.DATABASE = config.DATABASE || 'db.sqlite3';
+
+// The TABLE config option specifies what table to use in the database.
+// If your database has mutliple tables in it you should change this to make
+// sure that it won't conflict with any other tables you have.
+config.TABLE = config.TABLE || 'people';
+
 
 var backend = module.exports = {};
 
