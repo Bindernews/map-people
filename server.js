@@ -43,6 +43,7 @@ var server = require('http').Server(app);
 app.use('/static', express.static('static'));
 
 // enable bodyParser
+app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
     extended: true
 }));
@@ -110,6 +111,45 @@ app.post('/data/newpoint', function(req, res) {
         backend.createPerson(lat, lng, name, workplace, tags);
         return res.redirect(SUCCESS_URL);
     }
+});
+
+
+/**
+ * This endpoint receives a JSON body and creates a new data point from
+ * the given data. It sends back a json response.
+ */
+app.post('/data/newpoint/json', function(req, res) {
+    // verify data is valid
+    var lat = parseFloat(req.body.lat),
+        lng = parseFloat(req.body.lng),
+        name = req.body.name || '',
+        workplace = req.body.workplace || '',
+        tags = req.body.tags || '';
+    
+    console.log(req.body);
+    
+    // sanitize inputs with regexes
+    workplace = workplace.replace(WORKPLACE_REGEX, '');
+    tags = tags.toLowerCase().replace(TAGS_REGEX, '');
+    
+    // store the JSON result in this
+    var result;
+    
+    if (isNaN(lat) || isNaN(lng) || name == '' || workplace == ''
+        || tags == '') {
+        result = {
+            success: false,
+            error: 'Invalid fields',
+        };
+    } else {
+        // TODO map tags to set list of tags
+        backendCache = null;
+        backend.createPerson(lat, lng, name, workplace, tags);
+        result = {
+            success: true,
+        };
+    }
+    return res.end(JSON.stringify(result));
 });
 
 

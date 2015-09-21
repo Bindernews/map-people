@@ -1,0 +1,33 @@
+
+
+html, body, #map {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+
+#error {
+    color: red;
+    font-weight: bold;
+}
+
+#add-form {
+    position: absolute;
+    top: 45%;
+    left: 45%;
+    width: auto;
+    visibility: hidden;
+    background-color: beige;
+    border-radius: 5px;
+    padding: 4px;
+    border-color: black;
+    border: 1px solid black;
+}
+
+.newpoint_input {
+    padding: 2px;
+}
+
+.align-right {
+    text-align: right;
+}
