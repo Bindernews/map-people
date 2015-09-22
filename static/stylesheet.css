@@ -31,3 +31,7 @@ html, body, #map {
 .align-right {
     text-align: right;
 }
+
+.red_color {
+    color: red;
+}

@@ -44,12 +44,12 @@ backend.init = function () {
     db = new sqlite3.Database(config.DATABASE, initDatabase);
 }
 
-backend.createPerson = function (lat, lng, name, workplace, tags) {
+backend.createPerson = function (lat, lng, name, email, workplace, tags) {
     var INSERT_STATEMENT = 'INSERT INTO ' + config.TABLE + ' \
-(lat, lng, name, workplace, tags) VALUES (?1, ?2, ?3, ?4, ?5)';
+(lat, lng, name, email, workplace, tags) VALUES (?1, ?2, ?3, ?4, ?5, ?6)';
     
     databaseCache = null;
-    db.run(INSERT_STATEMENT, [lat, lng, name, workplace, tags]);
+    db.run(INSERT_STATEMENT, [lat, lng, name, email, workplace, tags]);
 }
 
 /**
@@ -75,7 +75,7 @@ function initDatabase() {
     
     var statement = 'CREATE TABLE IF NOT EXISTS ' + config.TABLE + ' (\
 id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, lat FLOAT, lng FLOAT, \
-name VARCHAR(100) NOT NULL, workplace VARCHAR(100) NOT NULL, \
-tags VARCHAR(255) NOT NULL)';
+name VARCHAR(100) NOT NULL, email VARCHAR(255) NOT NULL, \
+workplace VARCHAR(100) NOT NULL, tags VARCHAR(255) NOT NULL)';
     db.run(statement);
 }

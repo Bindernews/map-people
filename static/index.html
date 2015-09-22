@@ -13,22 +13,43 @@
     <div id="add-form">
         
         <!-- Close button -->
-        <div class="align-right">
-            <button id="close_add_form">X</button>
-        </div>
+        
         
         <!-- Div for error messages -->
         <div id="error"></div>
 
         <!-- Submission form -->
-        <form>
-            Latitude: <input class="newpoint_input" type="text" id="lat" name="lat" /><br/>
-            Longitude: <input class="newpoint_input" type="text" id="lng" name="lng" /><br/>
-            Name: <input class="newpoint_input" type="text" id="person_name" name="name" /><br/>
-            Workplace: <input class="newpoint_input" type="text" id="workplace" name="workplace" /><br/>
-            Tags: <input class="newpoint_input" type="text" id="tags" name="tags" /><br/>
-            <input class="newpoint_input" id="submit_add_form" type="button" value="Submit" />
-        </form>
+        <table>
+            <tr>
+                <td>Latitude:</td>
+                <td><input class="newpoint_input" type="text" id="lat" name="lat" /></td>
+            </tr>
+            <tr>
+                <td>Longitude:</td>
+                <td><input class="newpoint_input" type="text" id="lng" name="lng" /></td>
+            </tr>
+            <tr>
+                <td>Name:</td>
+                <td><input class="newpoint_input" type="text" id="person_name" name="name" /></td>
+            </tr>
+            <tr>
+                <td>Email:</td>
+                <td><input class="newpoint_input" type="email" id="email" name="email" /></td>
+            </tr>
+            <tr>
+                <td>Workplace:</td>
+                <td><input class="newpoint_input" type="text" id="workplace" name="workplace" /></td>
+            </tr>
+            <tr>
+                <td>Tags:</td>
+                <td><input class="newpoint_input" type="text" id="tags" name="tags" /></td>
+            </tr>
+            <tr>
+                <td><input class="newpoint_input" id="submit_add_form" type="button" value="Submit" /></td>
+                <td><div class="align-right"><button class="red_color" id="close_add_form">Back</button></div></td>
+            </tr>
+        </table>
+        
     </div>
     
     <script src="/static/runner.js"></script>

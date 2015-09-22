@@ -59,6 +59,15 @@ function updateMarkers() {
     xmlhttp.send();
 }
 
+function attachInfo(marker, message) {
+    var infoWindow = new google.maps.InfoWindow({
+        content: message
+    });
+    marker.addListener('click', function () {
+        infoWindow.open(marker.get('map'), marker);
+    });
+}
+
 // Loop through the results array and place a marker for each
 // set of coordinates.
 function placeMarkers(results) {
@@ -69,16 +78,10 @@ function placeMarkers(results) {
             position: latLng,
             map: map
         });
-        // Create an InfoWindow to show content
-        var infoWindow = new google.maps.InfoWindow({
-            content: person.name + ':<br/>Works at: ' + person.workplace
-                     + '<br/>Interested in: ' + person.tags,
-        } ); // end infoWindow
-
-        // Create event to open the InfoWindow when marker is clicked.
-        marker.addListener( 'click', function() {
-            infoWindow.open(map, marker);
-        });
+        
+        var message = person.name + ':<br/>Works at: ' + person.workplace
+                     + '<br/>Interested in: ' + person.tags;
+        attachInfo(marker, message);
         
         markers.push(marker);
     }
@@ -91,6 +94,8 @@ function placeMarkers(results) {
 function showAddForm(visible) {
     var form = document.getElementById('add-form');
     if (visible) {
+        // don't show an when they first open the popup window
+        document.getElementById('error').textContent = '';
         // make it visible
         form.style.visibility = 'visible';
     } else {
@@ -113,6 +118,7 @@ function createNewPoint() {
         lat: getInput('lat'),
         lng: getInput('lng'),
         name: getInput('person_name'),
+        email: getInput('email'),
         workplace: getInput('workplace'),
         tags: getInput('tags'),
     };

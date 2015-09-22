@@ -17,6 +17,7 @@ var path = require('path'),
 // Constant regexes
 var WORKPLACE_REGEX = /[^a-zA-Z0-9 ,']/;
 var TAGS_REGEX = /[^a-z0-9, ]/;
+var EMAIL_REGEX = /[\w\+\.]+@[\w\.]+/;
 
 
 // First we need to initalize the backend
@@ -48,9 +49,11 @@ app.use(bodyParser.urlencoded({
     extended: true
 }));
 
+
 app.get('/', function(req, res) {
     res.redirect('/static/index.html');
 });
+
 
 /**
  * Handle GET requests for the current data stored in the database.
@@ -75,46 +78,6 @@ app.get('/data/json', function(req, res) {
 
 
 /**
- * Handles posts to /data/newpoint which will create new data points.
- */
-app.post('/data/newpoint', function(req, res) {
-    // constants
-    var FORM_URL = '/static/newpoint.html?';
-    var SUCCESS_URL = '/static/point_created.html';
-        
-    // verify data is valid
-    var lat = parseFloat(req.body.lat),
-        lng = parseFloat(req.body.lng),
-        name = req.body.name || '',
-        workplace = req.body.workplace || '',
-        tags = req.body.tags || '';
-    
-    // sanitize inputs with regexes
-    workplace = workplace.replace(WORKPLACE_REGEX, '');
-    tags = tags.toLowerCase().replace(TAGS_REGEX, '');
-    
-    // 
-    if (isNaN(lat) || isNaN(lng) || name == '' || workplace == ''
-        || tags == '') {
-        var redirectURL = FORM_URL;
-        if (lat != NaN) {
-            redirectURL += 'lat=' + lat;
-        }
-        if (lng != NaN) {
-            redirectURL += '&lng=' + lng;
-        }
-        redirectURL += '&error=Invalid form fields';
-        return res.redirect(redirectURL);
-    } else {
-        // TODO map tags to set list of tags
-        backendCache = null;
-        backend.createPerson(lat, lng, name, workplace, tags);
-        return res.redirect(SUCCESS_URL);
-    }
-});
-
-
-/**
  * This endpoint receives a JSON body and creates a new data point from
  * the given data. It sends back a json response.
  */
@@ -123,10 +86,9 @@ app.post('/data/newpoint/json', function(req, res) {
     var lat = parseFloat(req.body.lat),
         lng = parseFloat(req.body.lng),
         name = req.body.name || '',
+        email = req.body.email || '',
         workplace = req.body.workplace || '',
         tags = req.body.tags || '';
-    
-    console.log(req.body);
     
     // sanitize inputs with regexes
     workplace = workplace.replace(WORKPLACE_REGEX, '');
@@ -135,16 +97,16 @@ app.post('/data/newpoint/json', function(req, res) {
     // store the JSON result in this
     var result;
     
-    if (isNaN(lat) || isNaN(lng) || name == '' || workplace == ''
-        || tags == '') {
+    if (isNaN(lat) || isNaN(lng) || name == '' || !EMAIL_REGEX.test(email)
+        || workplace == '' || tags == '') {
         result = {
             success: false,
-            error: 'Invalid fields',
+            error: 'Invalid field(s)',
         };
     } else {
         // TODO map tags to set list of tags
         backendCache = null;
-        backend.createPerson(lat, lng, name, workplace, tags);
+        backend.createPerson(lat, lng, name, email, workplace, tags);
         result = {
             success: true,
         };
