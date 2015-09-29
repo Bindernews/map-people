@@ -19,6 +19,7 @@
         <div id="error"></div>
 
         <!-- Submission form -->
+        <form id="submit_add_form">
         <table>
             <tr>
                 <td>Latitude:</td>
@@ -45,11 +46,16 @@
                 <td><input class="newpoint_input" type="text" id="tags" name="tags" /></td>
             </tr>
             <tr>
-                <td><input class="newpoint_input" id="submit_add_form" type="button" value="Submit" /></td>
+                <td><input class="newpoint_input" type="submit" value="Submit" /></td>
                 <td><div class="align-right"><button class="red_color" id="close_add_form">Back</button></div></td>
             </tr>
         </table>
-        
+        </form>
+    </div>
+    
+    <div id="location_search">
+        <form>
+        </form>
     </div>
     
     <script src="/static/runner.js"></script>

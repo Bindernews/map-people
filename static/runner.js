@@ -25,9 +25,13 @@ function initialize() {
         showAddForm(true);
     });
     
-    // When they click 'Submit' send the data to the server
-    document.getElementById('submit_add_form').addEventListener('click', function(event) {
+    // When they click 'Submit' send the data to the server.
+    document.getElementById('submit_add_form').addEventListener('submit', function(event) {
+        // Prevent the page from reloading
+        event.preventDefault();
+        // Try to create the new point
         createNewPoint();
+        return false;
     }, true);
     
     // When they click the X close the add form
