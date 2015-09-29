@@ -87,6 +87,12 @@ function placeMarkers(results) {
     }
 }
 
+function resetAddForm() {
+    document.getElementById('name').value = '';
+    document.getElementById('email').value = '';
+    document.getElementById('workplace').value = '';
+    document.getElementById('tags').value = '';
+}
 
 /**
  * Shows the add form
@@ -97,6 +103,7 @@ function showAddForm(visible) {
         // don't show an when they first open the popup window
         document.getElementById('error').textContent = '';
         // make it visible
+        resetAddForm();
         form.style.visibility = 'visible';
     } else {
         form.style.visibility = 'hidden';
@@ -117,7 +124,7 @@ function createNewPoint() {
     var postData = {
         lat: getInput('lat'),
         lng: getInput('lng'),
-        name: getInput('person_name'),
+        name: getInput('name'),
         email: getInput('email'),
         workplace: getInput('workplace'),
         tags: getInput('tags'),
