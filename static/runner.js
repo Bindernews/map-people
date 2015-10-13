@@ -6,6 +6,7 @@ var map;
 var markers = [];
 
 function initialize() {
+    // Create the map
     map = new google.maps.Map(document.getElementById('map'), {
         zoom: 4,
         center: new google.maps.LatLng(43.08448883056196, -77.68009766936302),
@@ -14,14 +15,44 @@ function initialize() {
     
     updateMarkers();
     
+    // Create the search box
+    var input = document.getElementById('pac-input');
+    var searchBox = new google.maps.places.SearchBox(input);
+    var topLeftControls = map.controls[google.maps.ControlPosition.TOP_LEFT];
+    topLeftControls.push(input);
+    
+    var markButton = document.getElementById('mark-button');
+    topLeftControls.push(markButton);
+    
+    // bias the search towards things currently in the viewport
+    map.addListener('bounds_changed', function() {
+        searchBox.setBounds(map.getBounds());
+    });
+    
+    searchBox.addListener('places_changed', function() {
+        var places = searchBox.getPlaces();
+        console.log(places);
+        
+        if (places.length == 0) {
+            return;
+        }
+        
+        var placeGeom = places[0].geometry.location;
+        // zoom to the place specified
+        map.panTo(placeGeom);
+        map.setZoom(16);
+        // Change the lat lng to match this place
+        setLatLng(placeGeom.lat(), placeGeom.lng());
+    });
+    
+    markButton.addEventListener('click', function(event) {
+        showAddForm(true);
+    });
+    
     // When the user right-clicks pop up a window for them to enter
     // their information.
-    google.maps.event.addListener(map, "rightclick", function (event) {
-        var lat = event.latLng.lat();
-        var lng = event.latLng.lng();
-        // populate yor box/field with lat, lng
-        document.getElementById('lat').value = lat;
-        document.getElementById('lng').value = lng;
+    map.addListener("rightclick", function (event) {
+        setLatLng(event.latLng.lat(), event.latLng.lng());
         showAddForm(true);
     });
     
@@ -114,6 +145,12 @@ function showAddForm(visible) {
     }
 }
 
+function setLatLng(lat, lng) {
+    // populate yor box/field with lat, lng
+    document.getElementById('lat').value = lat;
+    document.getElementById('lng').value = lng;
+}
+
 /**
  * Sends the data to create a new point and handles the responses.
  */
@@ -155,4 +192,4 @@ function createNewPoint() {
     xmlhttp.send(JSON.stringify(postData));
 }
 
-google.maps.event.addDomListener(window, 'load', initialize);
+// google.maps.event.addDomListener(window, 'load', initialize);

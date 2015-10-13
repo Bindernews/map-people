@@ -2,11 +2,14 @@
 <html>
 <head>
     <link rel="stylesheet" href="/static/stylesheet.css" />
-    <script
-        src="https://maps.googleapis.com/maps/api/js?libraries=visualization">
-    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?libraries=visualization,places&callback=initialize"
+        async defer></script>
 </head>
 <body>
+    
+    <input id="pac-input" class="controls" type="text" placeholder="Search Box" />
+    <input id="mark-button" class="controls" type="button" value="Mark" />
+    
     <div id="map"></div>
     
     <!-- This will be displayed on top of the map -->
@@ -31,15 +34,15 @@
             </tr>
             <tr>
                 <td>Name:</td>
-                <td><input class="newpoint_input" type="text" id="name" name="name" /></td>
+                <td><input class="newpoint_input" type="text" id="name" name="name" placeholder="Name" /></td>
             </tr>
             <tr>
                 <td>Email:</td>
-                <td><input class="newpoint_input" type="email" id="email" name="email" /></td>
+                <td><input class="newpoint_input" type="email" id="email" name="email" placeholder="Email address" /></td>
             </tr>
             <tr>
                 <td>Workplace:</td>
-                <td><input class="newpoint_input" type="text" id="workplace" name="workplace" /></td>
+                <td><input class="newpoint_input" type="text" id="workplace" name="workplace" placeholder="Workplace" /></td>
             </tr>
             <tr>
                 <td>Tags:</td>
@@ -47,17 +50,11 @@
             </tr>
             <tr>
                 <td><input class="newpoint_input" type="submit" value="Submit" /></td>
-                <td><div class="align-right"><button class="red_color" id="close_add_form">Back</button></div></td>
+                <td class="align-right"><input class="red_color newpoint_input" id="close_add_form" type="button" value="Back"></td>
             </tr>
         </table>
         </form>
     </div>
-    
-    <div id="location_search">
-        <form>
-        </form>
-    </div>
-    
     <script src="/static/runner.js"></script>
 </body>
 </html>
